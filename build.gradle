@@ -13,6 +13,6 @@ repositories {
 }
 
 dependencies {
-    # Group 02: Tale, Oliver (the german guy) and Kristoffer
+    // Group 02: Tale, Oliver (the german guy) and Kristoffer
     compile 'es.upm.company02:company02:0.0.1'
 }
