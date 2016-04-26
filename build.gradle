@@ -1,0 +1,17 @@
+group 'es.upm.testing'
+version '0.0.1'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven { url "https://jitpack.io" }
+    maven { url "http://jade.tilab.com/maven" }
+    maven { url "http://mvn.fap.no/content/repositories/xploration" }
+}
+
+dependencies {
+    compile 'es.upm.company02:company02:0.0.1'
+}
