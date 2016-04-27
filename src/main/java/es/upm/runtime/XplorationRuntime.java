@@ -1,7 +1,6 @@
 
 package es.upm.runtime;
 
-import jade.core.NotFoundException;
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
 import jade.wrapper.AgentContainer;
@@ -16,9 +15,10 @@ import java.util.regex.Pattern;
  * Handles the creation of the Jade runtime, agent creation and agent startup.
  */
 public class XplorationRuntime {
-    static final String companyClassPathTemplate = "es.upm.company0%d.Company[code=%s%s]";
-    static final String platformClassPathTemplate = "es.upm.platform0%d.Spacecraft[code=%s%s]";
-    static final String teamLibPathPattern= "Team0%s.*[.]jar";
+    static final String companyClassPathTemplate = "es.upm.company0%d.Company";
+    static final String platformClassPathTemplate = "es.upm.platform0%d.Spacecraft";
+    static final String libCodePath = "[code=%s%s]";
+    static final String teamLibPathPattern= "company0%s.*[.]jar";
     static int amountOfTeams = 5;
     int usedPlatformID = 3;
     String libsPath = "./libs/";
@@ -56,6 +56,10 @@ public class XplorationRuntime {
 
     }
 
+    /**
+     * Boots up the actual Jade Runtime, Container and RMA controller.
+     * @throws StaleProxyException
+     */
     public void bootJade() throws StaleProxyException {
         jadeRuntime = Runtime.instance();
         jadeRuntime.setCloseVM(true);
@@ -65,30 +69,59 @@ public class XplorationRuntime {
         rmaController.start();
     }
 
+    /**
+     * Tries to create the company agents. Searches the `libs` folder for
+     * a JAR with the company's name. In case of failure, tries to search
+     * the namespace in order to find the needed class.
+     * If the class is found - creates the agent.
+     */
     public void createCompanyAgents() {
         for(int i = 1; i <= amountOfTeams; ++i) {
             try {
+                String companyClassPath = String.format(companyClassPathTemplate, i);
+                System.out.printf("Loading %s. ", companyClassPath);
                 String path = findPathForTeam(i);
                 if(path == null)
                 {
-                    System.out.printf("Could not find JAR for Team0%s%n", i);
-                    continue;
+                    System.out.printf("JAR not found. Checking class... ", i);
+                    try{
+                        Class.forName(String.format(companyClassPathTemplate, i));
+                        System.out.printf("Found! ");
+                    }
+                    catch (ClassNotFoundException ex)
+                    {
+                        System.out.printf("Not found. Skipping agent. %n");
+                        continue;
+                    }
                 }
-                String companyPath = String.format(companyClassPathTemplate,
-                        i , libsPath, path);
-                System.out.println("Trying to load " + companyPath);
-                companyAgents.add(mainContainer.createNewAgent("Company0" + i, companyPath, null));
+                else{
+                    companyClassPath += String.format(libCodePath, libsPath, path);
+                }
+                companyAgents.add(mainContainer.createNewAgent("Company0" + i, companyClassPath, null));
+                System.out.printf("Agent created.%n", companyClassPath);
             } catch (Exception ex) {
                 System.out.println("Failed to init Company" + i);
             }
         }
 
     }
+
+    /**
+     * Searches the `libs` folder to find a JAR
+     * for the provided company number.
+     * @return the path to the jar
+     */
     public String findPathForTeam(int i)
     {
         File[] dir = new File(libsPath).listFiles();
         String patternStr = String.format(teamLibPathPattern, i);
         Pattern pattern = Pattern.compile(patternStr);
+        if(dir == null)
+        {
+            System.out.print("Lib folder not found. ");
+            return null;
+        }
+
         for (File file : dir) {
             if(pattern.matcher(file.getName()).matches())
             {
@@ -97,7 +130,8 @@ public class XplorationRuntime {
         }
         return null;
     }
-    public void runCompanyAgents() {
+
+    public void startCompanyAgents() {
         for (AgentController ac : companyAgents) {
             try {
                 ac.start();
@@ -108,26 +142,43 @@ public class XplorationRuntime {
 
     }
 
+    /**
+     * Tries to create the spacecraft agent. Searches the `libs` folder for
+     * a JAR with the company's name. In case of failure, tries to search
+     * the namespace in order to find the needed class.
+     * If the class is found - creates the agent.
+     */
     public void createPlatformAgent() {
         try {
+            String platformClassPath = String.format(platformClassPathTemplate, usedPlatformID);
+            System.out.printf("Loading %s. ", platformClassPath );
             String path = findPathForTeam(usedPlatformID);
             if(path == null)
             {
-                System.out.printf("Could not find JAR for Platform0%s%n", usedPlatformID);
-                throw new NotFoundException("Platform agent was not found!");
+
+                System.out.printf("JAR not found. Checking class... ");
+                try{
+                    Class.forName(String.format(platformClassPathTemplate, usedPlatformID));
+                    System.out.printf("Found! ");
+                }
+                catch (ClassNotFoundException ex)
+                {
+                    System.out.printf("Not found! ");
+                    return;
+                }
+            }
+            else{
+                platformClassPath += String.format(libCodePath, libsPath, path);
             }
 
-            String companyPath = String.format(platformClassPathTemplate,
-                    usedPlatformID, libsPath, path);
-            System.out.println("Trying to load " + companyPath);
-            platformAgent = mainContainer.createNewAgent("Spacecraft0" + usedPlatformID, companyPath, null);
-            System.out.printf("Agent %s loaded successfully%n", companyPath);
+            platformAgent = mainContainer.createNewAgent("Spacecraft0" + usedPlatformID, platformClassPath, null);
+            System.out.printf("Agent created.%n", platformClassPath);
         } catch (Exception ex) {
             System.out.println("Failed to init Spacecraft0" + usedPlatformID);
         }
     }
 
-    public void runPlatformAgent() {
+    public void startPlatformAgent() {
         try {
             platformAgent.start();
         } catch (StaleProxyException e) {

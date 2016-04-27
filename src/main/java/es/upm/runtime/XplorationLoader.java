@@ -22,11 +22,11 @@ public class XplorationLoader {
         }
 
         runtime.createPlatformAgent();
-        runtime.runPlatformAgent();
+        runtime.startPlatformAgent();
 
         runtime.createCompanyAgents();
         System.out.println("=========================\n   Company init finished\n   Starting them up now\n=========================");
-        runtime.runCompanyAgents();
+        runtime.startCompanyAgents();
 
 
     }
