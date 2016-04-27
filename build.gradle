@@ -15,4 +15,27 @@ repositories {
 dependencies {
     // Group 02: Tale, Oliver (the german guy) and Kristoffer
     compile 'es.upm.company02:company02:0.0.1'
+
+    // Group 03: Borys, Rafa Cyrill, Fernando
+    compile 'es.upm.company03:company03:+'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'es.upm.runtime.XplorationLoader',
+        )
+    }
+}
+
+task fatJar(type: Jar) {
+    manifest.from jar.manifest
+    from {
+        configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }
+    } {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+    with jar
 }
