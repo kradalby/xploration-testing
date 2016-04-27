@@ -17,7 +17,7 @@ dependencies {
     compile 'es.upm.company02:company02:0.0.1'
 
     // Group 03: Borys, Rafa Cyrill, Fernando
-    compile 'es.upm.company03:company03:+'
+    compile 'es.upm.company03:company03:0.1d'
 }
 
 jar {
