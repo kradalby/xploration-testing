@@ -13,11 +13,20 @@ repositories {
 }
 
 dependencies {
+    // Group 01: Jessica, Maria, Pranav
+    compile 'es.upm.company01:company01:0.0.2'
+
     // Group 02: Tale, Oliver (the german guy) and Kristoffer
     compile 'es.upm.company02:company02:0.0.1'
 
     // Group 03: Borys, Rafa Cyrill, Fernando
-    compile 'es.upm.company03:company03:0.1d'
+    compile 'es.upm.company03:company03:0.1.2'
+
+    // Group 05: Vinu & Co
+    compile 'es.upm.company05:company05:0.0.2'
+
+
+
 }
 
 jar {
