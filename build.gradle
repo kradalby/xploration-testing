@@ -53,3 +53,11 @@ task fatJar(type: Jar) {
     }
     with jar
 }
+
+(1..5).each { company ->
+    task "run${company}" (type:JavaExec) {
+        classpath = sourceSets.main.runtimeClasspath
+        main = 'es.upm.runtime.XplorationLoader'
+        args = ['./libs/',"${company}"]
+    }
+}
