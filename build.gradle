@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
     // Group 01: Jessica, Maria, Pranav
-    //compile('es.upm.company01:company01:+') {changing = true}
+    compile('es.upm.company01:company01:+') {changing = true}
 
     // Group 02: Tale, Oliver (the german guy) and Kristoffer
     compile('es.upm.company02:company02:+') {changing = true}
