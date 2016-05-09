@@ -29,7 +29,7 @@ dependencies {
     compile('es.upm.company04:company04:+') {changing = true}
 
     // Group 05: Vinu & Co
-    //compile('es.upm.company05:company05:+') {changing = true}
+    compile('es.upm.company05:company05:+') {changing = true}
 
 
 }
