@@ -16,7 +16,8 @@ import java.util.regex.Pattern;
  */
 public class XplorationRuntime {
     static final String companyClassPathTemplate = "es.upm.company0%d.Company";
-    static final String platformClassPathTemplate = "es.upm.platform0%d.Spacecraft";
+    static final String platformSpaceCraftClassPathTemplate = "es.upm.platform0%d.Spacecraft";
+    static final String platformWorldClassPathTemplate = "es.upm.platform0%d.World";
     static final String libCodePath = "[code=%s%s]";
     static final String teamLibPathPattern= "company0%s.*[.]jar";
     static int amountOfTeams = 5;
@@ -26,7 +27,8 @@ public class XplorationRuntime {
     AgentContainer mainContainer;
     AgentController rmaController;
     ArrayList<AgentController> companyAgents = new ArrayList<AgentController>();
-    AgentController platformAgent;
+    AgentController platformSpacecraftAgent;
+    AgentController platformWorldAgent;
 
     public XplorationRuntime(String[] args) {
         processArguments(args);
@@ -150,15 +152,17 @@ public class XplorationRuntime {
      */
     public void createPlatformAgent() {
         try {
-            String platformClassPath = String.format(platformClassPathTemplate, usedPlatformID);
-            System.out.printf("Loading %s. ", platformClassPath );
+            String platformSpacecraftClassPath = String.format(platformSpaceCraftClassPathTemplate, usedPlatformID);
+            System.out.printf("Loading %s. ", platformSpacecraftClassPath );
+            String platformWorldClassPath = String.format(platformWorldClassPathTemplate, usedPlatformID);
+            System.out.printf("Loading %s. ", platformWorldClassPath );
             String path = findPathForTeam(usedPlatformID);
             if(path == null)
             {
 
                 System.out.printf("JAR not found. Checking class... ");
-                try{
-                    Class.forName(String.format(platformClassPathTemplate, usedPlatformID));
+                try {
+                    Class.forName(String.format(platformSpacecraftClassPath, usedPlatformID));
                     System.out.printf("Found! ");
                 }
                 catch (ClassNotFoundException ex)
@@ -167,20 +171,25 @@ public class XplorationRuntime {
                     return;
                 }
             }
-            else{
-                platformClassPath += String.format(libCodePath, libsPath, path);
+            else {
+                platformSpacecraftClassPath += String.format(libCodePath, libsPath, path);
+                platformWorldClassPath += String.format(libCodePath, libsPath, path);
             }
 
-            platformAgent = mainContainer.createNewAgent("Spacecraft0" + usedPlatformID, platformClassPath, null);
-            System.out.printf("Agent created.%n", platformClassPath);
+            platformSpacecraftAgent = mainContainer.createNewAgent("Spacecraft0" + usedPlatformID, platformSpacecraftClassPath, null);
+            platformWorldAgent = mainContainer.createNewAgent("World0" + usedPlatformID, platformWorldClassPath, null);
+            System.out.printf("Agent created.%n", platformSpacecraftClassPath);
+            System.out.printf("Agent created.%n", platformWorldClassPath);
         } catch (Exception ex) {
             System.out.println("Failed to init Spacecraft0" + usedPlatformID);
+            System.out.println("Failed to init World0" + usedPlatformID);
         }
     }
 
     public void startPlatformAgent() {
         try {
-            platformAgent.start();
+            platformSpacecraftAgent.start();
+            platformWorldAgent.start();
         } catch (StaleProxyException e) {
             System.out.println("Failed to init Spacecraft");
         }
