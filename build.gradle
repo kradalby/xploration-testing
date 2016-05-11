@@ -2,8 +2,16 @@ group 'es.upm.testing'
 version '0.0.1'
 
 apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = 'es.upm.runtime.XplorationLoader'
 
 sourceCompatibility = 1.8
+
+configurations.all {
+    // Check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
 
 repositories {
     mavenCentral()
@@ -13,6 +21,48 @@ repositories {
 }
 
 dependencies {
+    //Group 01: Jessica, Maria, Pranav
+    compile('es.upm.company01:company01:+') {changing = true}
+
     // Group 02: Tale, Oliver (the german guy) and Kristoffer
-    compile 'es.upm.company02:company02:0.0.1'
+    compile('es.upm.company02:company02:+') {changing = true}
+
+    // Group 03: Borys, Rafa Cyrill, Fernando
+    compile('es.upm.company03:company03:+') {changing = true}
+
+    // Group 04: Adam, Petra, Jan
+    //compile('es.upm.company04:company04:+') {changing = true}
+
+    // Group 05: Vinu & Co
+    compile('es.upm.company05:company05:+') {changing = true}
+
+
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'es.upm.runtime.XplorationLoader',
+        )
+    }
+}
+
+task fatJar(type: Jar) {
+    manifest.from jar.manifest
+    from {
+        configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }
+    } {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+    with jar
+}
+
+(1..5).each { company ->
+    task "run${company}" (type:JavaExec) {
+        classpath = sourceSets.main.runtimeClasspath
+        main = 'es.upm.runtime.XplorationLoader'
+        args = ['./libs/',"${company}"]
+    }
 }
