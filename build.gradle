@@ -8,6 +8,11 @@ mainClassName = 'es.upm.runtime.XplorationLoader'
 
 sourceCompatibility = 1.8
 
+configurations.all {
+    // Check for updates every build
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
 repositories {
     mavenCentral()
     maven { url "https://jitpack.io" }
@@ -16,8 +21,8 @@ repositories {
 }
 
 dependencies {
-    // Group 01: Jessica, Maria, Pranav
-    //compile('es.upm.company01:company01:+') {changing = true}
+    //Group 01: Jessica, Maria, Pranav
+    compile('es.upm.company01:company01:+') {changing = true}
 
     // Group 02: Tale, Oliver (the german guy) and Kristoffer
     compile('es.upm.company02:company02:+') {changing = true}
@@ -26,7 +31,7 @@ dependencies {
     compile('es.upm.company03:company03:+') {changing = true}
 
     // Group 04: Adam, Petra, Jan
-    compile('es.upm.company04:company04:+') {changing = true}
+    //compile('es.upm.company04:company04:+') {changing = true}
 
     // Group 05: Vinu & Co
     //compile('es.upm.company05:company05:+') {changing = true}
