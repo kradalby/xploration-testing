@@ -31,7 +31,7 @@ dependencies {
     compile('es.upm.company03:company03:+') {changing = true}
 
     // Group 04: Adam, Petra, Jan
-    //compile('es.upm.company04:company04:+') {changing = true}
+    compile('es.upm.company04:company04:+') {changing = true}
 
     // Group 05: Vinu & Co
     compile('es.upm.company05:company05:+') {changing = true}
