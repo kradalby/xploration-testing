@@ -17,7 +17,7 @@ repositories {
     mavenCentral()
     maven { url "https://jitpack.io" }
     maven { url "http://jade.tilab.com/maven" }
-    maven { url "http://mvn.fap.no/content/repositories/xploration" }
+    maven { url "http://m.fap.no:8081/content/repositories/xploration" }
 }
 
 dependencies {
